@@ -4,7 +4,7 @@ import { InfoIcon } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
-const ErrorPage = () => {
+const NotFound = () => {
   return (
     <>
       <Navbar />
@@ -30,4 +30,4 @@ const ErrorPage = () => {
   );
 };
 
-export default ErrorPage;
+export default NotFound;
