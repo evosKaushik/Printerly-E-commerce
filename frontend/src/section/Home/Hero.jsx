@@ -8,6 +8,7 @@ import {
 } from "../../components/ui/carousel";
 import { Card, CardContent } from "../../components/ui/card";
 import Autoplay from "embla-carousel-autoplay";
+import { GridBackground } from "@/components/ui/grid-background";
 
 const Hero = () => {
   const plugin = React.useRef(Autoplay({ delay: 2000 }));
@@ -16,6 +17,10 @@ const Hero = () => {
       id="hero"
       className="bg-(--bg-primary-clr)  w-full min-h-[calc(100vh-72px)] flex "
     >
+          <div className="relative flex items-center justify-center w-full rounded-xl overflow-hidden">
+      <GridBackground gridSize="12:12" beams={24}>
+
+ 
       <div className="container mx-auto flex   items-center flex-col sm:flex-row">
         {/* Left Side Content */}
         <div className="flex justify-center w-auto items-start flex-col  gap-4  max-sm:mt-12">
@@ -39,7 +44,7 @@ const Hero = () => {
         <div className="grow h-full flex justify-center items-center lg:mr-12 w-11/12 lg:w-auto mr-12 md:mr-8 max-sm:mt-8 max-sm:mr-0 xl:ml-18">
           <Carousel
             plugins={[plugin.current]}
-            className="w-full max-w-80  md:max-w-96 lg:max-w-lg 2xl:max-w-6xl max-sm:max-w-10/12 xl:max-w-4xl"
+            className="w-full max-w-80  md:max-w-96 lg:max-w-lg 2xl:max-w-7xl max-sm:max-w-10/12 xl:max-w-4xl"
           >
             <CarouselContent>
               {Array.from({ length: 5 }).map((_, index) => (
@@ -61,6 +66,8 @@ const Hero = () => {
           </Carousel>
         </div>
       </div>
+           </GridBackground>
+    </div>
     </section>
   );
 };

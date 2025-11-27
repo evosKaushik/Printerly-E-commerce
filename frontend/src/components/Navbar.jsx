@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Input } from "./ui/input";
 import { FrownIcon, Menu, Search, User2 } from "lucide-react";
 import { ModeToggle } from "./ModeToggle";
@@ -21,13 +21,31 @@ const searchArry = [
 
 const Navbar = () => {
   const [searchValue, setSearchValue] = useState("");
+  const searchBoxRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        searchBoxRef.current &&
+        !searchBoxRef.current.contains(event.target)
+      ) {
+        setSearchValue("");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   let filteredSearch = searchArry.filter((value) =>
     value.toLowerCase().includes(searchValue)
   );
 
   return (
-    <nav className="h-18 border shadow bg-(--bg-primary-clr) sticky top-0 left-0 right-0 z-50">
+    <nav
+      className="h-18 border shadow bg-(--bg-primary-clr) sticky top-0 left-0 right-0 z-50"
+      ref={searchBoxRef}
+    >
       <div className="container mx-auto h-full flex items-center justify-between px-2">
         <div className="flex items-center gap-1 h-full grow">
           <Link to="/">
@@ -35,7 +53,7 @@ const Navbar = () => {
               <div className="w-6 h-6 sm:h-8 sm:w-8">
                 <img src="./logo.png" alt="Printerly Logo" />
               </div>
-              <h2 className="text-[1rem] sm:text-2xl font-bold tracking-tight font-inter">
+              <h2 className="text-lg sm:text-2xl font-bold tracking-tight font-inter">
                 Printerly
               </h2>
             </div>
@@ -48,8 +66,6 @@ const Navbar = () => {
               <Input
                 onChange={(e) => {
                   setSearchValue(e.target.value.toLowerCase());
-                  console.log(e.target);
-                  console.log(e.currentTarget);
                 }}
                 type="text"
                 placeholder="Search"
