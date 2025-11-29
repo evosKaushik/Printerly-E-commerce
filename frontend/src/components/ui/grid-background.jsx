@@ -177,7 +177,7 @@ function GridBackground({
         );
       })}
       {/* Content Layer */}
-      <div className="relative z-50 size-full flex">{children}</div>
+      <div className="relative z-20 size-full flex">{children}</div>
     </motion.div>
   );
 }

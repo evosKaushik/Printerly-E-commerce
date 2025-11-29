@@ -15,6 +15,7 @@ const Products = () => {
           <SideBar />
           <ProductsContainer />
         </div>
+
       </section>
     </main>
   );

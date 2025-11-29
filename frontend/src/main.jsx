@@ -13,7 +13,7 @@ import Deals from "./pages/User/Deals";
 import Support from "./pages/User/Support";
 import Aboutus from "./pages/User/Aboutus";
 import Profile from "./pages/User/Profile";
-import Login from "./pages/User/Login";
+import Login from "./pages/Login";
 
 const router = createBrowserRouter([
   {

@@ -66,11 +66,11 @@ const SideBar = () => {
               >
                 <Checkbox
                   id={brand}
-                  className="h-5 w-5 cursor-pointer rounded-sm border-gray-900"
+                  className="h-5 w-5 cursor-pointer rounded-sm border-gray-900 dark:border-gray-100 dark:bg-gray-800"
                 />
                 <Label
                   htmlFor={brand}
-                  className="text-[16px] cursor-pointer text-gray-800"
+                  className="text-[16px] cursor-pointer text-gray-800 dark:text-gray-200"
                 >
                   {brand}
                 </Label>
@@ -88,7 +88,7 @@ const SideBar = () => {
                 id={condition}
                 checked={selectedCondition === condition}
                 onCheckedChange={() => setSelectedCondition(condition)}
-                className="rounded-full data-[state=checked]:bg-(--secondary-clr) h-5 w-5 border border-gray-400 dark:border-gray-900 cursor-pointer  dark:data-[state=checked]:bg-(--secondary-clr)"
+                className="h-5 w-5 cursor-pointer rounded-sm border-gray-900 dark:border-gray-100 dark:bg-gray-800"
               />
               <Label
                 htmlFor={condition}

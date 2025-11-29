@@ -38,13 +38,13 @@ const Footer = () => {
           <p className="text-gray-300 mb-2 w-10/12">
             Sign up for our newsletter to get the best deals first
           </p>
-          <div className="flex  mt-4 w-10/12">
+          <div className="flex  mt-4 w-10/12 group">
             <Input
               placeholder="Enter your email"
               className="focus-visible:ring-0 bg-white rounded-sm rounded-br-none rounded-tr-none outline-none"
             />
             <button className="bg-gradient-to-r from-[#18D2B4] to-[#7F5AF0] text-white w-12 flex justify-center items-center rounded-br-md rounded-tr-md  cursor-pointer">
-              <ArrowRight className="w-6 h-6" />
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-200" />
             </button>
           </div>
         </div>

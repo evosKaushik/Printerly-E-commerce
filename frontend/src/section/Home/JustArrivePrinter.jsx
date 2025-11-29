@@ -8,11 +8,11 @@ const JustArrivePrinter = () => {
         Just Arrived
       </h1>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 mt-3 sm:mt-6">
-        <Card className="p-3 bg-(--bg-primary-clr) ">
+        <Card className="p-3 bg-(--bg-primary-clr) group">
           <img
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7TLfmQJ4GUlOj_GKoUBbvQ6n6i4kKxwPpzP04GinjpB0_zmYo1DMkUkiKkcjiwIXV-pt04gjKTpaX_ljaPyXv2ty5rj0Q8YU1-jj6X48VJ3fZ9AyxYcSBdgitt6RqaHa61-64F4OYuroPBMevghy73TWzyDm8ARgSrtFYMS9GpOIpa7JMI7iuLh3R3hPqJwbVI8BYvMYb_2bcj9856L--Gjfv3cWqMW5LZwYzuR-j1X6fmKmYWJErNzkT46MtIayR0o7SuGQfBGE"
             alt="Printer"
-            className="rounded-lg"
+            className="rounded-lg group-hover:scale-105 transition-all duration-500"
           />
           <CardContent className="font-inter">
             <h2 className="text-primary font-bold">HP Laser Jet Pro M404n</h2>
@@ -20,11 +20,11 @@ const JustArrivePrinter = () => {
             <span className="font-bold text-xl ">$189.99</span>
           </CardContent>
         </Card>
-        <Card className="p-3 bg-(--bg-primary-clr) ">
+        <Card className="p-3 bg-(--bg-primary-clr) group">
           <img
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7TLfmQJ4GUlOj_GKoUBbvQ6n6i4kKxwPpzP04GinjpB0_zmYo1DMkUkiKkcjiwIXV-pt04gjKTpaX_ljaPyXv2ty5rj0Q8YU1-jj6X48VJ3fZ9AyxYcSBdgitt6RqaHa61-64F4OYuroPBMevghy73TWzyDm8ARgSrtFYMS9GpOIpa7JMI7iuLh3R3hPqJwbVI8BYvMYb_2bcj9856L--Gjfv3cWqMW5LZwYzuR-j1X6fmKmYWJErNzkT46MtIayR0o7SuGQfBGE"
             alt="Printer"
-            className="rounded-lg"
+            className="rounded-lg group-hover:scale-105 transition-all duration-500"
           />
           <CardContent className="font-inter">
             <h2 className="text-primary font-bold">HP Laser Jet Pro M404n</h2>
@@ -32,11 +32,11 @@ const JustArrivePrinter = () => {
             <span className="font-bold text-xl ">$189.99</span>
           </CardContent>
         </Card>
-        <Card className="p-3 bg-(--bg-primary-clr) ">
+        <Card className="p-3 bg-(--bg-primary-clr) group">
           <img
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7TLfmQJ4GUlOj_GKoUBbvQ6n6i4kKxwPpzP04GinjpB0_zmYo1DMkUkiKkcjiwIXV-pt04gjKTpaX_ljaPyXv2ty5rj0Q8YU1-jj6X48VJ3fZ9AyxYcSBdgitt6RqaHa61-64F4OYuroPBMevghy73TWzyDm8ARgSrtFYMS9GpOIpa7JMI7iuLh3R3hPqJwbVI8BYvMYb_2bcj9856L--Gjfv3cWqMW5LZwYzuR-j1X6fmKmYWJErNzkT46MtIayR0o7SuGQfBGE"
             alt="Printer"
-            className="rounded-lg"
+            className="rounded-lg group-hover:scale-105 transition-all duration-500"
           />
           <CardContent className="font-inter">
             <h2 className="text-primary font-bold">HP Laser Jet Pro M404n</h2>
@@ -44,11 +44,11 @@ const JustArrivePrinter = () => {
             <span className="font-bold text-xl ">$189.99</span>
           </CardContent>
         </Card>
-        <Card className="p-3 bg-(--bg-primary-clr) ">
+        <Card className="p-3 bg-(--bg-primary-clr) group">
           <img
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7TLfmQJ4GUlOj_GKoUBbvQ6n6i4kKxwPpzP04GinjpB0_zmYo1DMkUkiKkcjiwIXV-pt04gjKTpaX_ljaPyXv2ty5rj0Q8YU1-jj6X48VJ3fZ9AyxYcSBdgitt6RqaHa61-64F4OYuroPBMevghy73TWzyDm8ARgSrtFYMS9GpOIpa7JMI7iuLh3R3hPqJwbVI8BYvMYb_2bcj9856L--Gjfv3cWqMW5LZwYzuR-j1X6fmKmYWJErNzkT46MtIayR0o7SuGQfBGE"
             alt="Printer"
-            className="rounded-lg"
+            className="rounded-lg group-hover:scale-105 transition-all duration-500"
           />
           <CardContent className="font-inter">
             <h2 className="text-primary font-bold">HP Laser Jet Pro M404n</h2>

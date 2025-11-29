@@ -24,7 +24,7 @@ const Hero = () => {
       <div className="container mx-auto flex   items-center flex-col sm:flex-row">
         {/* Left Side Content */}
         <div className="flex justify-center w-auto items-start flex-col  gap-4  max-sm:mt-12">
-          <h1 className="text-4xl md:text-4xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-extrabold max-sm:pl-6 font-inter lg:leading-16 2xl:leading-18 grow-0">
+          <h1 className="text-4xl md:text-4xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-extrabold max-sm:pl-6 font-inter lg:leading-16 2xl:leading-20 grow-0">
             Pre-Owned
             <br /> Printers.Like New,
             <br />

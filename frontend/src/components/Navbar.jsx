@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Input } from "./ui/input";
 import { FrownIcon, Menu, Search, User2 } from "lucide-react";
 import { ModeToggle } from "./ModeToggle";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Button } from "./ui/button";
 
 const searchArry = [
@@ -50,7 +50,7 @@ const Navbar = () => {
         <div className="flex items-center gap-1 h-full grow">
           <Link to="/">
             <div className="flex items-end gap-2">
-              <div className="w-6 h-6 sm:h-8 sm:w-8">
+              <div className="w-8 h-8">
                 <img src="./logo.png" alt="Printerly Logo" />
               </div>
               <h2 className="text-lg sm:text-2xl font-bold tracking-tight font-inter">
@@ -99,19 +99,19 @@ const Navbar = () => {
         <div className="flex gap-6 items-center h-full ">
           <ul className="hidden lg:flex items-center  space-x-5 2xl:space-x-8 lg:text-lg font-inter font-semibold mr-3 h-full text-nowrap [&>*]:cursor-pointer">
             <li>
-              <Link to="/products">Printer</Link>
+              <NavLink to="/products">Printer</NavLink>
             </li>
             <li>
-              <Link to="/products">Ink & Toner</Link>
+              <NavLink to="/products">Ink & Toner</NavLink>
             </li>
             <li>
-              <Link to="/deals">Deals</Link>
+              <NavLink to="/deals">Deals</NavLink>
             </li>
             <li>
-              <Link to="support">Support</Link>
+              <NavLink to="support">Support</NavLink>
             </li>
             <li>
-              <Link to="about-us">About Us</Link>
+              <NavLink to="about-us">About Us</NavLink>
             </li>
           </ul>
           <div className="gap-6 hidden sm:flex">
