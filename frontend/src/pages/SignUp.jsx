@@ -1,12 +1,12 @@
-import LoginForm from "@/components/LoginForm";
+import SignupForm from "@/components/SignupForm";
 import React from "react";
 
-const Login = () => {
+const SignUp = () => {
   return (
     <section className="w-full  flex justify-center  items-center min-h-[calc(100vh-72px)] bg-(--bg-primary-clr)">
-      <LoginForm /> 
+      <SignupForm />
     </section>
   );
 };
 
-export default Login;
+export default SignUp;

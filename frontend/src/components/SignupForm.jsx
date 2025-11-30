@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -11,25 +11,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "./ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
-import UserAPI from "@/api/User.api";
-import toast from "react-hot-toast";
 
-const LoginForm = () => {
+const SignupForm = () => {
   const [seePassword, setSeePassword] = useState(true);
   const [formData, setFormData] = useState({
-    emailOrUsername: "",
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
     password: "",
   });
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (localStorage.getItem("accessToken")) {
-      return navigate("/");
-    }
-  }, []);
+  
+
   const handleInput = (e) => {
     const { name, value } = e.target;
 
@@ -37,63 +34,86 @@ const LoginForm = () => {
   };
 
   const submitFormData = async () => {
-    await toast.promise(
-      UserAPI.post("/login", formData)
-      .then((res) => {
-        const { data } = res;
-        if (data.success) {
-          localStorage.setItem("accessToken", data.accessToken);
-          localStorage.setItem("user", JSON.stringify(data.user));
-          setTimeout(() => {
-            navigate('/')
-          }, 1000);
+    try {
+      const res = await axios.post(`http://localhost:3000/api/v1/user/register`,formData,
+        {
+          headers: "application/json",
         }
-
-        return data; 
-      }),
-
-      {
-        loading: "Logging in...",
-        success: (data) => data.message || "Login successful 🎉",
-        error: (err) =>
-          err.response?.data?.message || "Login failed. Please try again.",
-      }
-    );
+      );
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSubmit = async () => {
     console.log(formData);
-    submitFormData();
+    submitFormData()
   };
+
   return (
     <Card className="w-11/12 max-w-md font-inter">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-        <CardDescription>Find great deals on quality printers.</CardDescription>
+        <CardTitle className="text-2xl font-bold">New Here</CardTitle>
+        <CardDescription>
+          Join to find great deals on quality printers.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-3 2xl:gap-6">
+          <div className="grid sm:grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input
+                id="firstName"
+                type="text"
+                name="firstName"
+                placeholder="John"
+                required
+                value={formData.firstName}
+                onChange={handleInput}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                name="lastName"
+                type="text"
+                placeholder="singh"
+                required
+                value={formData.lastName}
+                onChange={handleInput}
+              />
+            </div>
+          </div>
           <div className="grid gap-2">
-            <Label htmlFor="emailOrUsername">Username or Email</Label>
+            <Label htmlFor="username">Username</Label>
             <Input
-              id="emailOrUsername"
-              name="emailOrUsername"
+              id="username"
+              name="username"
               type="text"
-              placeholder="Enter email or username"
+              placeholder="John_123"
               required
-              value={formData.emailOrUsername}
+              value={formData.username}
+              onChange={handleInput}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="xyz@example.com"
+              required
+              value={formData.email}
               onChange={handleInput}
             />
           </div>
           <div className="grid gap-2">
             <div className="flex items-center flex-wrap">
               <Label htmlFor="password">Password</Label>
-              <Link
-                to="#"
-                className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-              >
-                Forgot your password?
-              </Link>
             </div>
             <div className="relative">
               <Input
@@ -127,15 +147,15 @@ const LoginForm = () => {
           className="w-full cursor-pointer text-white font-semibold text-[16px]"
           onClick={handleSubmit}
         >
-          Login
+          Sign Up
         </Button>
         <Button variant="outline" className="w-full cursor-pointer">
-          Login in with Google
+          Sign in with Google
         </Button>
         <p className="text-[16px] -mb-3 2xl:my-2">
-          Don't have account?{" "}
-          <Link to="/signup" className="text-primary font-bold hover:underline">
-            Create
+          Already have a account?{" "}
+          <Link to="/login" className="text-primary font-bold hover:underline">
+            Login
           </Link>
         </p>
       </CardFooter>
@@ -143,4 +163,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default SignupForm;

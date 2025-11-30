@@ -172,8 +172,29 @@
 }
 
 @theme {
+  --breakpoint-xs: 28rem;
   --font-poppins: "Poppins", sans-serif;
   --font-inter: "Inter", sans-serif;
   --bg-primary-clr: #f6f9fd;
   --secondary-clr: #0dccf2;
 }
+
+/* Wave animation */
+@keyframes wave {
+  0%, 100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scaleY(0.5);
+    opacity: 0.5;
+  }
+}
+
+/* Register the animation */
+@layer utilities {
+  .animate-wave {
+    animation: wave 1.2s ease-in-out infinite;
+  }
+}
+

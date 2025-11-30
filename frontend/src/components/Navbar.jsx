@@ -53,15 +53,15 @@ const Navbar = () => {
               <div className="w-8 h-8">
                 <img src="./logo.png" alt="Printerly Logo" />
               </div>
-              <h2 className="text-lg sm:text-2xl font-bold tracking-tight font-inter">
+              <h2 className="hidden xs:block text-lg sm:text-xl font-bold tracking-tight font-inter">
                 Printerly
               </h2>
             </div>
           </Link>
           {/* SearchBox Parent Div */}
 
-          <div className="w-1/2 relative ml-2 sm:ml-8">
-            <div className="flex items-center bg-gray-200 dark:bg-gray-800 px-4 rounded-full">
+          <div className="w-10/12  xs:w-1/2 relative ml-2 sm:ml-8">
+            <div className="flex items-center bg-gray-200 dark:bg-gray-800 px-4 rounded-full border border-gray-400 dark:border-gray-600">
               <Search className="cursor-pointer" />
               <Input
                 onChange={(e) => {
@@ -97,7 +97,7 @@ const Navbar = () => {
           </div>
         </div>
         <div className="flex gap-6 items-center h-full ">
-          <ul className="hidden lg:flex items-center  space-x-5 2xl:space-x-8 lg:text-lg font-inter font-semibold mr-3 h-full text-nowrap [&>*]:cursor-pointer">
+          <ul className="hidden lg:flex items-center  space-x-5 2xl:space-x-8 font-inter font-semibold mr-3 h-full text-nowrap [&>*]:cursor-pointer">
             <li>
               <NavLink to="/products">Printer</NavLink>
             </li>
@@ -114,22 +114,27 @@ const Navbar = () => {
               <NavLink to="about-us">About Us</NavLink>
             </li>
           </ul>
-          <div className="gap-6 hidden sm:flex">
-            {true ? (
-              <Button
-                variant="primary"
-                className="text-primary cursor-pointer text-lg font-inter font-bold dark:text-[#101F22]/90"
-              >
-                <Link to="/login">Login</Link>
-              </Button>
+          <div className="gap-6 flex">
+            {!localStorage.getItem("accessToken") ? (
+              <div className="hidden md:flex gap-4">
+                <Button className="bg-gray-100 border border-gray-300 shadow-sm text-primary cursor-pointer  text-lg font-inter font-bold dark:bg-gray-700 dark:text-(--secondary-clr)/90 dark:border-gray-500 ">
+                  <Link to="/signup">Sign Up</Link>
+                </Button>
+                <Button
+                  variant="primary"
+                  className="text-primary cursor-pointer text-lg font-inter font-bold dark:text-[#101F22]/90"
+                >
+                  <Link to="/login">Login</Link>
+                </Button>
+              </div>
             ) : (
-              <div className="bg-gray-200 dark:dark:bg-gray-800 h-9 flex items-center justify-center w-9 rounded-md cursor-pointer">
+              <div className="bg-gray-200  dark:dark:bg-gray-800 h-9 flex items-center justify-center w-9 rounded-md cursor-pointer">
                 <Link to="/profile">
                   <User2 />
                 </Link>
               </div>
             )}
-            <div>
+            <div className="hidden sm:block">
               <ModeToggle />
             </div>
           </div>

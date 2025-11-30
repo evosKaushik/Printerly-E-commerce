@@ -32,7 +32,7 @@ const ProductsContainer = () => {
           </div>
         </div>
       </header>
-      <div className="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6 p-6 pb-16">
+      <div className="grid xs:grid-cols-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6 p-6 pb-16">
         {Array.from({ length: 10 }).map((el, index) => {
           return (
             <Card key={index} className="py-1 px-2 -space-y-6 ">
