@@ -1,13 +1,19 @@
+import { AuthContext } from "@/contexts/AuthContext";
 import { useContext } from "react";
+import toast from "react-hot-toast";
 import { Navigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
 
-export default function ProtectedRoute({ children }) {
+export default function ProtectedRoute({
+  redirectTo,
+  msg,
+  conditionCallback,
+  children,
+}) {
   const { user } = useContext(AuthContext);
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
+  if (conditionCallback(user)) {
+    toast.error(msg);
+    return <Navigate to={redirectTo} replace />;
   }
-
   return children;
 }

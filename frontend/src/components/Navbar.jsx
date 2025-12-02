@@ -1,9 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Input } from "./ui/input";
-import { FrownIcon, Menu, Search, User2 } from "lucide-react";
+import {
+  CreditCard,
+  FileText,
+  FrownIcon,
+  Menu,
+  Search,
+  Settings,
+  User,
+  User2,
+} from "lucide-react";
 import { ModeToggle } from "./ModeToggle";
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "./ui/button";
+import ProfileDropdown from "./ui/ProfileDropdown";
+import UserAPI from "@/api/User.api";
+import { AuthContext } from "@/contexts/AuthContext";
+import toast from "react-hot-toast";
 
 const searchArry = [
   "HTML",
@@ -19,9 +32,36 @@ const searchArry = [
   "Next JS",
 ];
 
+const menuItems = [
+  {
+    label: "Profile",
+    href: "/profile",
+    icon: <User className="w-4 h-4" />,
+  },
+  {
+    label: "Subscription",
+    value: "subscription",
+    href: "/subscription",
+    icon: <CreditCard className="w-4 h-4" />,
+  },
+  {
+    label: "Settings",
+    href: "/",
+    icon: <Settings className="w-4 h-4" />,
+  },
+  {
+    label: "Terms & Policies",
+    href: "/",
+    icon: <FileText className="w-4 h-4" />,
+    external: true,
+  },
+];
+
 const Navbar = () => {
   const [searchValue, setSearchValue] = useState("");
   const searchBoxRef = useRef();
+
+  const { accessToken, logout, user } = useContext(AuthContext);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -40,6 +80,26 @@ const Navbar = () => {
   let filteredSearch = searchArry.filter((value) =>
     value.toLowerCase().includes(searchValue)
   );
+
+  const handleLogoutBtn = async () => {
+    try {
+      const { data } = await UserAPI.post(
+        "http://localhost:3000/api/v1/user/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      if (data.success) {
+        toast.success(data.message);
+        logout();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <nav
@@ -115,7 +175,7 @@ const Navbar = () => {
             </li>
           </ul>
           <div className="gap-6 flex">
-            {!localStorage.getItem("accessToken") ? (
+            {!user?.firstName ? (
               <div className="hidden md:flex gap-4">
                 <Button className="bg-gray-100 border border-gray-300 shadow-sm text-primary cursor-pointer  text-lg font-inter font-bold dark:bg-gray-700 dark:text-(--secondary-clr)/90 dark:border-gray-500 ">
                   <Link to="/signup">Sign Up</Link>
@@ -128,11 +188,14 @@ const Navbar = () => {
                 </Button>
               </div>
             ) : (
-              <div className="bg-gray-200  dark:dark:bg-gray-800 h-9 flex items-center justify-center w-9 rounded-md cursor-pointer">
-                <Link to="/profile">
+              <ProfileDropdown
+                menuItems={menuItems}
+                handleLogoutBtn={handleLogoutBtn}
+              >
+                <div className="bg-gray-200  dark:dark:bg-gray-800 h-9 flex items-center justify-center w-9 rounded-md cursor-pointer">
                   <User2 />
-                </Link>
-              </div>
+                </div>
+              </ProfileDropdown>
             )}
             <div className="hidden sm:block">
               <ModeToggle />

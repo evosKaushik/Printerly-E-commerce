@@ -1,9 +1,10 @@
-import axios from "axios";
+import UserAPI from "@/api/User.api";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 
-const Verify = () => {
+const VerifyResult = () => {
   const [status, setStatus] = useState({
     isVerified: false,
     status: "Verifying",
@@ -14,8 +15,8 @@ const Verify = () => {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const res = await axios.post(
-          `http://localhost:3000/api/v1/user/verify`,
+        const { data } = await UserAPI.post(
+          "/verify",
           {},
           {
             headers: {
@@ -23,13 +24,18 @@ const Verify = () => {
             },
           }
         );
-        if (res.data.success) {
+        if (data.success) {
           setStatus({
             isVerified: true,
             status: "✅ Verify successfully",
           });
+          toast.success("Verify successfully");
+          localStorage.removeItem("pendingEmail");
           setTimeout(() => {
-            navigate("/");
+            navigate("/login");
+            toast("Login to Proceed", {
+              icon: "ℹ",
+            });
           }, 1000);
         }
       } catch (error) {
@@ -39,6 +45,7 @@ const Verify = () => {
             isVerified: false,
             status: "❌ Token expire try again",
           });
+          toast.error("Token expire try again");
           setTimeout(() => {
             navigate("/");
           }, 1000);
@@ -49,6 +56,7 @@ const Verify = () => {
             isVerified: false,
             status: "❌ not a valid Token",
           });
+          toast.error("not a valid Token");
           setTimeout(() => {
             navigate("/");
           }, 1000);
@@ -59,6 +67,7 @@ const Verify = () => {
             isVerified: false,
             status: "❌ Verification failed, Already verified",
           });
+          toast.error("Already verified");
           return;
         }
         if (!error.response.data.success) {
@@ -66,6 +75,7 @@ const Verify = () => {
             isVerified: false,
             status: "❌ Verification failed",
           });
+          toast.error("Verification failed");
           return;
         }
       }
@@ -92,4 +102,4 @@ const Verify = () => {
   );
 };
 
-export default Verify;
+export default VerifyResult;

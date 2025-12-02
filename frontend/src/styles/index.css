@@ -179,7 +179,7 @@
   --secondary-clr: #0dccf2;
 }
 
-/* Wave animation */
+
 @keyframes wave {
   0%, 100% {
     transform: scaleY(1);
@@ -191,10 +191,13 @@
   }
 }
 
-/* Register the animation */
+
 @layer utilities {
   .animate-wave {
     animation: wave 1.2s ease-in-out infinite;
+  }
+  .screenBgColor{
+    @apply bg-(--bg-primary-clr) h-[calc(100vh-72px)]
   }
 }
 

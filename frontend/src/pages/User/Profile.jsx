@@ -1,7 +1,10 @@
 import UserAPI from "@/api/User.api";
-import LazyLoader from "@/components/ui/LazyLoader";
+import Form from "@/components/Form";
+import InputWithLabel from "@/components/ui/InputWithLabel";
+import PasswordInput from "@/components/ui/PasswordInput";
 import { AuthContext } from "@/contexts/AuthContext";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const { accessToken } = useContext(AuthContext);
@@ -20,15 +23,19 @@ const Profile = () => {
         console.log(data);
       } catch (error) {
         console.log(error);
+        if (error.response.data?.message) {
+          toast.error(error.response.data?.message);
+        }
       }
     };
 
     getUserProfile();
   }, []);
+
   return (
     <div>
       Profile
-      
+
     </div>
   );
 };
