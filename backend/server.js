@@ -8,6 +8,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import "./config/passport.js";
 import helmet from "helmet";
+import compression from "compression";
 
 
 
