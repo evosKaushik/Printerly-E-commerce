@@ -1,4 +1,4 @@
-import { lazy, StrictMode, useContext } from "react";
+import { lazy, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles/index.css";
 import App from "./App.jsx";
@@ -7,13 +7,15 @@ import { RouterProvider } from "react-router";
 import { ThemeProvider } from "./components/theme-provider";
 import NotFound from "./pages/User/NotFound";
 // import UserLayout from "./layouts/UserLayout";
-import { AuthContext, AuthProvider } from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import VerifyResult from "./pages/VerifyResult";
 import VerifyStatus from "./pages/VerifyStatus";
+import AuthSuccess from "./pages/AuthSuccess";
+import AdminRoute from "./components/AdminRoute";
 
 const UserLayout = lazy(() => import("./layouts/UserLayout"));
 const Home = lazy(() => import("./pages/User/Home"));
@@ -58,17 +60,22 @@ const router = createBrowserRouter([
             ),
           },
           {
+            path: "/auth-success",
+            element: <AuthSuccess />,
+          },
+          {
             path: "/login",
             element: (
               <ProtectedRoute
                 redirectTo="/"
-                conditionCallback={(user) => user}
-                msg="Already Login"
+                conditionCallback={(user) => !!user}
+                msg="Already logged in"
               >
                 <Login />
               </ProtectedRoute>
             ),
           },
+
           {
             path: "/verify",
             element: (
@@ -87,13 +94,9 @@ const router = createBrowserRouter([
       {
         path: "/admin",
         element: (
-          <ProtectedRoute
-            redirectTo="/"
-            conditionCallback={(user) => user?.role !== "admin"}
-            msg="You are not admin"
-          >
+          <AdminRoute>
             <AdminLayout />
-          </ProtectedRoute>
+          </AdminRoute>
         ),
 
         children: [{ index: true, element: <AdminDashboard /> }],

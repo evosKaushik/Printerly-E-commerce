@@ -1,6 +1,17 @@
-import ProductsContainer from "@/components/ProductsContainer";
-import SideBar from "@/components/SideBar";
+import ProductsContainer from "@/section/Products/ProductsContainer";
+import FilterSideBar from "@/components/FilterSidebar";
 import React from "react";
+
+const brands = ["HP", "Canon", "Brother", "Epson"];
+const conditions = ["Like New", "Good", "Fair"];
+
+const selectFilterItems = [
+  "Newest Arrival",
+  "Best Selling",
+  "Highest Rated",
+  "Trending Now",
+  "Discount: High to Low",
+];
 
 const Products = () => {
   return (
@@ -12,10 +23,13 @@ const Products = () => {
           </h3>
         </div>
         <div className="grid sm:grid-cols-[250px_1fr] md:grid-cols-[300px_1fr] gap-4 mt-4 sm:mt-6">
-          <SideBar />
+          <FilterSideBar  
+          selectFilterItems={selectFilterItems}
+          checkBoxItems={brands}
+          conditionsCheckBox={conditions}
+          />
           <ProductsContainer />
         </div>
-
       </section>
     </main>
   );

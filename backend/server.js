@@ -2,9 +2,11 @@ import "dotenv/config";
 import express from "express";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
+import adminDashboardRoutes from "./routes/admin.route.js";
 import connectDB from "./config/db.js";
-import cors from 'cors'
+import cors from "cors";
 import cookieParser from "cookie-parser";
+import "./config/passport.js";
 
 const app = express();
 
@@ -18,10 +20,11 @@ app.use(
   })
 );
 
-// routers 
+// routers
 
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/admin-dashboard", adminDashboardRoutes);
 
 //Connect to DB
 
@@ -32,3 +35,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+

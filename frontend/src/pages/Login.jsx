@@ -1,4 +1,4 @@
-import UserAPI from "@/api/User.api";
+import BaseAPI from "@/api/Base.api";
 import Form from "@/components/Form";
 import InputWithLabel from "@/components/ui/InputWithLabel";
 import PasswordInput from "@/components/ui/PasswordInput";
@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { setAccessToken, setUser } = useContext(AuthContext);
-
   const [formData, setFormData] = useState({
     emailOrUsername: "",
     password: "",
@@ -18,27 +17,28 @@ const Login = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({ ...prevState, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const submitFormData = async () => {
     await toast.promise(
-      UserAPI.post("/login", formData).then((res) => {
+      BaseAPI.post("/user/login", formData).then((res) => {
         const { data } = res;
         if (data.success) {
+          setAccessToken(data.accessToken);
+          setUser(data.user);
+
+          localStorage.setItem("accessToken", data.accessToken);
+          localStorage.setItem("user", JSON.stringify(data.user));
+
+          const target = data.message.includes("Admin") ? "/admin" : "/profile";
           setTimeout(() => {
-            navigate("/");
-          }, 1000);
-          setTimeout(() => {
-            setAccessToken(data.accessToken);
-            setUser(data.user);
-            
-          }, 1500);
+            navigate(target, { replace: true, state: { fromLogin: true } });
+          }, 100);
         }
 
         return data;
       }),
-
       {
         loading: "Logging in...",
         success: (data) => data.message || "Login successful 🎉",
@@ -48,20 +48,22 @@ const Login = () => {
     );
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     submitFormData();
   };
+
   return (
-    <section className="w-full  flex justify-center  items-center min-h-[calc(100vh-72px)] bg-(--bg-primary-clr)">
+    <section className="w-full flex justify-center items-center min-h-[calc(100vh-72px)] bg-(--bg-primary-clr)">
       <Form
         formTitle="Welcome Back"
         formDescription="Login to your account"
         onSubmit={handleSubmit}
         submitText="Login"
         secondaryAction={{
-          text: "Login with Google",
-          onClick: () => console.log("Google login clicked"),
+          text: `Login with Google`,
+          onClick: () =>
+            window.open("http://localhost:3000/api/v1/auth/google", "_self"),
         }}
         footerText="Don't have an account?"
         footerLink={{ text: "Create", to: "/signup" }}

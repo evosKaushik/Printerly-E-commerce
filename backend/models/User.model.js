@@ -16,13 +16,11 @@ const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
-      required: true,
       trim: true,
       minLength: 3,
     },
     lastName: {
       type: String,
-      required: true,
       trim: true,
       minLength: 3,
     },
@@ -31,7 +29,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       maxLength: 16,
       minLength: 4,
-      required: true,
       unique: true,
       trim: true,
     },
@@ -50,16 +47,20 @@ const userSchema = new mongoose.Schema(
     },
 
     // // GOOGLE LOGIN
-    // googleId: {
-    //   type: String,
-    //   default: null,
-    // },
+    googleId: {
+      type: String,
+      default: null,
+    },
 
-    // avatar: {
-    //   type: String,
-    //   default:
-    //     "https://res.cloudinary.com/demo/image/upload/v1690000000/default.png",
-    // },
+    avatar: {
+      type: String,
+      default:null
+    },
+
+    avatarPublicId:{
+          type: String,
+      default:null
+    },
 
     role: {
       type: String,

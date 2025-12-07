@@ -1,7 +1,7 @@
-import UserAPI from "@/api/User.api";
+import UserAPI from "@/api/Base.api";
 import { Button } from "@/components/ui/button";
 import { MailIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -13,9 +13,11 @@ const VerifyStatus = () => {
 
   const navigate = useNavigate();
 
-  if (!pendingEmail) {
-    navigate('/')
-  }
+  useEffect(() => {
+    if (!pendingEmail) {
+      navigate("/");
+    }
+  }, []);
 
   const handleClick = async () => {
     try {
@@ -26,7 +28,7 @@ const VerifyStatus = () => {
       if (data.success) {
         toast.success(data.message);
         setHidden(true);
-        localStorage.setItem("hiddenContent", true)
+        localStorage.setItem("hiddenContent", true);
       }
     } catch (error) {
       console.log(error.response);

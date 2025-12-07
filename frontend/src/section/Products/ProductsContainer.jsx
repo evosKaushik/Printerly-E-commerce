@@ -1,8 +1,8 @@
 import { ChevronLeft, ChevronRight, LayoutGridIcon, LayoutList } from "lucide-react";
 import React, { useState } from "react";
-import { Card } from "./ui/card";
+import { Card } from "../../components/ui/card";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { Button } from "./ui/button";
+import { Button } from "../../components/ui/button";
 import { Link } from "react-router-dom";
 
 
@@ -12,7 +12,7 @@ const ProductsContainer = () => {
     setGridLayoutActive(!gridLayoutActive);
   };
   return (
-    <div className="h-full relative ">
+    <div className="h-full relative overflow-y-scroll">
       <header className="flex justify-between px-4 h-12">
         <h2 className="text-[16px] font-inter text-gray-700 mt-auto ">
           Showing <span>24</span> of <span>128</span> result

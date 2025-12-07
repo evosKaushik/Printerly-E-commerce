@@ -1,4 +1,5 @@
-import UserAPI from "@/api/User.api";
+import BaseAPI from "@/api/Base.api";
+import UserAPI from "@/api/Base.api";
 import Form from "@/components/Form";
 import InputWithLabel from "@/components/ui/InputWithLabel";
 import PasswordInput from "@/components/ui/PasswordInput";
@@ -25,7 +26,7 @@ const SignUp = () => {
 
   const submitFormData = async () => {
     await toast.promise(
-      UserAPI.post("/register", formData).then((res) => {
+      BaseAPI.post("/user/register", formData).then((res) => {
         const { data } = res;
         if (data.success) {
           localStorage.setItem("pendingEmail", data.pendingEmail);
@@ -60,7 +61,7 @@ const SignUp = () => {
         submitText="Sign up"
         secondaryAction={{
           text: "Sign up with Google",
-          onClick: () => console.log("Google login clicked"),
+          onClick: () => window.open("http://localhost:3000/api/v1/auth/google", "_self"),
         }}
         footerText="Already have an account?"
         footerLink={{ text: "Login", to: "/login" }}

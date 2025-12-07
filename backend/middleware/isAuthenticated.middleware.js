@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import UserModel from "../models/User.model.js"; 
+import UserModel from "../models/User.model.js";
 
 export const isAuthenticated = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -15,7 +15,10 @@ export const isAuthenticated = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-    const user = await UserModel.findById(decoded.id);
+    const { id } = decoded;
+    const user = await UserModel.findById(id).select(
+      "-password -__v -createdAt -updatedAt -token"
+    );
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -28,7 +31,8 @@ export const isAuthenticated = async (req, res, next) => {
         message: "User not login",
       });
     }
-    req.user = decoded;
+
+    req.user = user;
     next();
   } catch (err) {
     if (err.name === "TokenExpiredError") {

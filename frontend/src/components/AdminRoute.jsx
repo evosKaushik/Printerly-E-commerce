@@ -4,29 +4,23 @@ import { AuthContext } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
 import LazyLoader from "./ui/LazyLoader";
 
-export default function ProtectedRoute({
-  redirectTo = "/login",
-  msg = "Please login to continue",
-  conditionCallback = (user) => !user,
+export default function AdminRoute({
+  redirectTo = "/",
+  msg = "Access denied! Admins only 🚫",
   children,
 }) {
   const { user, loading } = useContext(AuthContext);
   const location = useLocation();
-  const shouldRedirect = conditionCallback(user);
   const hasShownToast = useRef(false);
+  const isAdmin = user && user.role?.toLowerCase() === "admin";
 
-  
   useEffect(() => {
-    if (!loading && shouldRedirect && !hasShownToast.current) {
-      const cameFromLogin =
-        location.state?.fromLogin === true || location.pathname === "/login";
-
-      if (!cameFromLogin && msg) toast.error(msg);
+    if (!loading && !isAdmin && !hasShownToast.current) {
+      toast.error(msg);
       hasShownToast.current = true;
     }
-  }, [shouldRedirect, msg, location, loading]);
+  }, [loading, isAdmin, msg]);
 
-  
   if (loading) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
@@ -35,7 +29,7 @@ export default function ProtectedRoute({
     );
   }
 
-  if (shouldRedirect) {
+  if (!isAdmin) {
     return <Navigate to={redirectTo} replace state={{ from: location }} />;
   }
 

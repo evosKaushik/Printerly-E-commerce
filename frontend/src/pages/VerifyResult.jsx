@@ -1,4 +1,5 @@
-import UserAPI from "@/api/User.api";
+import BaseAPI from "@/api/Base.api";
+import UserAPI from "@/api/Base.api";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -13,10 +14,13 @@ const VerifyResult = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!localStorage.getItem("pendingEmail")) {
+      navigate("/");
+    }
     const verifyToken = async () => {
       try {
-        const { data } = await UserAPI.post(
-          "/verify",
+        const { data } = await BaseAPI.post(
+          "/user/verify",
           {},
           {
             headers: {

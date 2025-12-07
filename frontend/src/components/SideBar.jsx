@@ -1,116 +1,96 @@
+import { LogOutIcon, SidebarClose } from "lucide-react";
 import { useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
-import { Checkbox } from "./ui/checkbox";
-import { Label } from "./ui/label";
-import { Card } from "./ui/card";
-import { Button } from "./ui/button";
+import SkeletonImage from "./SkeletonImage";
+import { Skeleton } from "./ui/skeleton";
+import { Link } from "react-router-dom";
 
-const SideBar = () => {
-  const [selectedBrand, setSelectedBrand] = useState([]);
-  const [selectedCondition, setSelectedCondition] = useState("Brother");
-
-  const brands = ["HP", "Canon", "Brother", "Epson"];
-  const conditions = ["Like New", "Good", "Fair"];
-
-  const selectFilterItems = [
-    "Newest Arrival",
-    "Best Selling",
-    "Highest Rated",
-    "Trending Now",
-    "Discount: High to Low",
-  ];
+const SideBar = ({ navListItems, userDetails, onClickHandleLogout }) => {
+  const [isSideBarOpen, setIsSideBarOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState(1);
   return (
-    <aside className="hidden sm:block">
-      <h1 className="text-2xl font-inter font-bold">Filter</h1>
-      <p className="mt-2 text-gray-500 font-inter">
-        Find the perfect printer for your needs.
-      </p>
-      <div className="space-y-6">
-        {/* Sort By Selector */}
-        <Card className="mt-6  p-4  rounded-lg shadow-sm">
-          <h2 className="md:text-lg font-inter font-bold">Sort By</h2>
-          <Select>
-            <SelectTrigger className="w-full bg-gray-100 dark:bg-gray-800 -mt-2 border border-gray-300 dark:border-gray-700 rounded-md text-[16px] font-inter font-medium">
-              <SelectValue placeholder="Select a filter" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {selectFilterItems.map((item, index) => (
-                  <SelectItem
-                    key={item + index}
-                    value={item}
-                    className="text-[16px] font-inter"
-                  >
-                    {item}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </Card>
-        {/* Brand CheckBox */}
-        <Card className="-space-y-3 p-4 rounded-lg shadow-sm">
-          <h2 className="text-lg font-bold font-inter">Brand</h2>
-          <div className="space-y-2">
-            {brands.map((brand, index) => (
-              <div
-                className="flex items-center gap-4 font-inter"
-                key={brand + index}
-              >
-                <Checkbox
-                  id={brand}
-                  className="h-5 w-5 cursor-pointer rounded-sm border-gray-900 dark:border-gray-100 dark:bg-gray-800"
-                />
-                <Label
-                  htmlFor={brand}
-                  className="text-[16px] cursor-pointer text-gray-800 dark:text-gray-200"
-                >
-                  {brand}
-                </Label>
-              </div>
-            ))}
-          </div>
-        </Card>
-        {/* Condition CheckBox */}
-        <Card className="-space-y-3 p-4 rounded-lg shadow-sm">
-          <h2 className="text-lg font-bold font-inter">Condition</h2>
-
-          {conditions.map((condition) => (
-            <div key={condition} className="flex items-center space-x-2">
-              <Checkbox
-                id={condition}
-                checked={selectedCondition === condition}
-                onCheckedChange={() => setSelectedCondition(condition)}
-                className="h-5 w-5 cursor-pointer rounded-sm border-gray-900 dark:border-gray-100 dark:bg-gray-800"
-              />
-              <Label
-                htmlFor={condition}
-                className="font-inter text-[16px] font-semibold cursor-pointer text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
-              >
-                {condition}
-              </Label>
-            </div>
-          ))}
-        </Card>
-        {/* Apply Filter */}
-        <div className="flex w-full px-2 gap-4">
-          <Button
-            variant="primary"
-            className="font-bold dark:text-zinc-900 grow cursor-pointer"
+    <aside
+      className={`bg-background border-r border-gray-300 dark:border-gray-700 shadow-lg 
+            transition-all duration-300 ease-in-out 
+            ${isSideBarOpen ? "w-[280px]" : "w-[85px]"} 
+            hidden sm:block sticky top-[72px] h-[calc(100vh-72px)]`}
+    >
+      <div className="relative h-full p-4">
+        {/* Toggle Button */}
+        <div className="flex justify-end">
+          <button
+            onClick={() => setIsSideBarOpen(!isSideBarOpen)}
+            className="bg-gray-100 dark:bg-gray-800 p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition"
           >
-            Apply Filter
-          </Button>
-          <Button className="bg-gray-200  font-bold text-primary hover:bg-gray-300 dark:bg-gray-800 grow cursor-pointer">
-            Reset
-          </Button>
+            <SidebarClose
+              className={`text-primary transition-transform duration-300 ${
+                isSideBarOpen ? "rotate-0" : "rotate-180"
+              }`}
+              size={26}
+            />
+          </button>
         </div>
+
+        {/* User Info */}
+        <div className="flex items-center gap-4 mt-6">
+          <div className="relative shrink-0">
+            <SkeletonImage
+              src={userDetails?.avatar}
+              alt={userDetails?.username}
+              rounded="shrink-0 rounded-full"
+              className={`  ${isSideBarOpen ? "h-12 w-12" : "h-10 w-10 ml-2"}`}
+            />
+          </div>
+          {isSideBarOpen && (
+            <div className="w-full">
+              <h3 className="text-base font-semibold truncate">
+                <span>
+                  {userDetails?.username || (
+                    <Skeleton className="w-10/12 h-4" />
+                  )}
+                </span>
+              </h3>
+              <div className="text-sm text-gray-600 dark:text-gray-400 truncate w-11/12">
+                <span title={userDetails?.email}>
+                  {userDetails?.email || (
+                    <Skeleton className="w-full h-4 mt-2" />
+                  )}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Navigation */}
+        <nav className="mt-6 space-y-1">
+          {navListItems.map(({ id, title, icon }) => (
+            <Link
+              key={id}
+              to=""
+              onClick={() => setActiveTab(id)}
+              className={`flex items-center gap-4 p-3 rounded-md 
+                    hover:bg-blue-100 dark:hover:bg-blue-900/30 
+                    transition-colors duration-200
+                    ${
+                      activeTab === id ? "bg-blue-100 dark:bg-blue-900/40" : ""
+                    }`}
+            >
+              <span className="text-blue-700 dark:text-blue-300">{icon}</span>
+              {isSideBarOpen && (
+                <span className="font-medium truncate">{title}</span>
+              )}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Logout */}
+        <button
+          onClick={onClickHandleLogout}
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 px-4 py-3 rounded-md
+                text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/40 w-[85%]"
+        >
+          <LogOutIcon size={24} />
+          {isSideBarOpen && <span className="font-semibold">Logout</span>}
+        </button>
       </div>
     </aside>
   );

@@ -5,6 +5,7 @@ import crypto from "crypto";
 import { verifyEmail } from "../emailVerification/verifyEmail.js";
 import jwt from "jsonwebtoken";
 import { Session } from "../models/Session.model.js";
+import cloudinary from "../utils/cloudinary.js";
 
 const emailRegex =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -264,6 +265,15 @@ const login = async (req, res) => {
     // 🚫 Remove sensitive data before sending
     const { password: pwd, __v, ...safeUser } = user._doc;
 
+    if (user.role === "admin") {
+      return res.status(200).json({
+        success: true,
+        message: `Welcome back, ${user.firstName}! Admin`,
+        user: safeUser,
+        accessToken,
+      });
+    }
+
     return res.status(200).json({
       success: true,
       message: `Welcome back, ${user.firstName}!`,
@@ -281,11 +291,13 @@ const login = async (req, res) => {
 
 const profile = async (req, res) => {
   try {
-    const { id: userId } = req.user;
+    const { id } = req.user;
 
-    const user = await UserModel.findById(userId).select(
-      "-password -__v -createdAt -updatedAt -token -isVerified -isLoggedIn"
-    );
+    const user = await UserModel.findById(id)
+      .select(
+        "-password -__v -createdAt -updatedAt -token -isVerified -isLoggedIn"
+      )
+      .lean();
 
     if (!user) {
       return res.status(404).json({
@@ -296,7 +308,7 @@ const profile = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "User get successfully",
+      message: "Profile fetched successfully",
       data: user,
     });
   } catch (error) {
@@ -310,9 +322,9 @@ const profile = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    const userId = req.user.id;
-    await Session.deleteMany({ userId: userId });
-    const user = await UserModel.findById(userId);
+    const { id } = req.user;
+    await Session.deleteMany({ userId: id });
+    const user = await UserModel.findById(id);
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -325,7 +337,7 @@ const logout = async (req, res) => {
         message: "User already logout",
       });
     }
-    await UserModel.findByIdAndUpdate(userId, { isLoggedIn: false });
+    await UserModel.findByIdAndUpdate(id, { isLoggedIn: false });
     res.clearCookie("refreshToken");
     return res.status(200).json({
       success: true,
@@ -408,4 +420,83 @@ const resendVerificationLink = async (req, res) => {
   }
 };
 
-export { register, verify, login, profile, logout, resendVerificationLink };
+const updateUser = async (req, res) => {
+  try {
+    const userIdToUpdate = req.params.id;
+    const loggedInUser = req.user;
+    const { firstName, lastName, email } = req.body;
+
+    if (
+      loggedInUser._id.toString() !== userIdToUpdate &&
+      loggedInUser.role !== "admin"
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not allowed to update this profile",
+      });
+    }
+
+    let user = await UserModel.findById(userIdToUpdate)
+      .select(
+        "-password -__v -createdAt -updatedAt -token -isVerified -isLoggedIn"
+      )
+      .lean();
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    let avatarURL = user.avatar;
+    let avatarPublicId = user.avatarPublicId;
+
+    if (req.file) {
+      if (avatarPublicId) {
+        await cloudinary.uploader.destroy(avatarPublicId);
+      }
+      const uploadResult = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "profiles" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        stream.end(req.file.buffer);
+      });
+      avatarURL = uploadResult.secure_url;
+      avatarPublicId = uploadResult.public_id;
+    }
+
+    // update Fields
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
+    user.email = email || user.email;
+    user.avatar = avatarURL || user.avatar;
+    user.avatarPublicId = avatarPublicId || user.avatarPublicId;
+
+    const updatedUser = await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile Updated Successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export {
+  register,
+  verify,
+  login,
+  profile,
+  logout,
+  resendVerificationLink,
+  updateUser,
+};

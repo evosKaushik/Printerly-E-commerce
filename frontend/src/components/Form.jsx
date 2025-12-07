@@ -9,6 +9,7 @@ import {
 } from "./ui/card";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
+import { cn } from "@/lib/utils";
 
 const Form = ({
   formTitle,
@@ -19,11 +20,12 @@ const Form = ({
   secondaryAction,
   footerText,
   footerLink,
+  className
 }) => {
   return (
     <form
       onSubmit={onSubmit}
-      className="w-11/12 max-w-md font-inter shadow-lg border rounded-xl"
+      className={cn("w-11/12 max-w-md font-inter shadow-lg border rounded-xl", className)}
     >
       <Card>
         <CardHeader>
@@ -54,6 +56,7 @@ const Form = ({
               className="w-full cursor-pointer"
               onClick={secondaryAction.onClick}
             >
+              <img src="images/google.svg" alt="Google Logo" className="h-full"/>
               {secondaryAction.text}
             </Button>
           )}

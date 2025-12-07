@@ -201,3 +201,7 @@
   }
 }
 
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #00cfff transparent;
+}

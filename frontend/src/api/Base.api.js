@@ -1,14 +1,14 @@
 import axios from "axios";
 
-const UserAPI = axios.create({
-  baseURL: "http://localhost:3000/api/v1/user",
+const BaseAPI = axios.create({
+  baseURL: "http://localhost:3000/api/v1/",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-UserAPI.interceptors.response.use(
+BaseAPI.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
@@ -31,7 +31,7 @@ UserAPI.interceptors.response.use(
         localStorage.setItem("accessToken", newToken);
 
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return UserAPI(originalRequest);
+        return BaseAPI(originalRequest);
       } catch (err) {
         console.error("Refresh token failed:", err);
         localStorage.removeItem("accessToken");
@@ -44,4 +44,4 @@ UserAPI.interceptors.response.use(
   }
 );
 
-export default UserAPI;
+export default BaseAPI;
