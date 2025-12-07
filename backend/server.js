@@ -7,15 +7,20 @@ import connectDB from "./config/db.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import "./config/passport.js";
+import helmet from "helmet";
+
+
 
 const app = express();
+app.use(helmet());
+app.use(compression());
 
 app.use(express.json());
 app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   })
 );

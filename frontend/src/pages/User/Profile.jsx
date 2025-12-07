@@ -113,7 +113,7 @@ const Profile = () => {
             if (data.success) {
               setProfileData(data.updatedUser || updatedProfileData);
               setIsEditing(false);
-              console.log(data)
+              console.log(data.updatedUser)
             }
             return data.message || "Profile updated successfully!";
           },
