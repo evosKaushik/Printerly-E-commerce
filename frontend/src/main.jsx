@@ -32,7 +32,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    errorElement: <NotFound />, // this should be changed to page ErrorPage
+    // this should be changed to page ErrorPage
     children: [
       {
         path: "/",
@@ -100,6 +100,10 @@ const router = createBrowserRouter([
         ),
 
         children: [{ index: true, element: <AdminDashboard /> }],
+      },
+      {
+        path: "*",
+        element: <NotFound />,
       },
     ],
   },
