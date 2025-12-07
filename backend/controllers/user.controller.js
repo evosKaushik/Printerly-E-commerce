@@ -440,7 +440,6 @@ const updateUser = async (req, res) => {
       .select(
         "-password -__v -createdAt -updatedAt -token -isVerified -isLoggedIn"
       )
-      .lean();
     if (!user) {
       return res.status(404).json({
         success: false,
