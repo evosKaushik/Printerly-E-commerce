@@ -22,7 +22,7 @@ BaseAPI.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const { data } = await axios.post(
-          "http://localhost:3000/api/v1/auth/refresh",
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/refresh`,
           {},
           { withCredentials: true }
         );
@@ -35,7 +35,6 @@ BaseAPI.interceptors.response.use(
       } catch (err) {
         console.error("Refresh token failed:", err);
         localStorage.removeItem("accessToken");
-        localStorage.removeItem("user");
         window.location.href = "/login";
       }
     }

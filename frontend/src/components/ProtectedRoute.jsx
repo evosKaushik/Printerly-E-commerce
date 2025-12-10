@@ -1,8 +1,7 @@
-import { useContext, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { AuthContext } from "@/contexts/AuthContext";
+import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import LazyLoader from "./ui/LazyLoader";
 
 export default function ProtectedRoute({
   redirectTo = "/login",
@@ -10,30 +9,21 @@ export default function ProtectedRoute({
   conditionCallback = (user) => !user,
   children,
 }) {
-  const { user, loading } = useContext(AuthContext);
+  const { user } = useSelector((store) => store.user);
+
   const location = useLocation();
   const shouldRedirect = conditionCallback(user);
   const hasShownToast = useRef(false);
 
-  
   useEffect(() => {
-    if (!loading && shouldRedirect && !hasShownToast.current) {
+    if (shouldRedirect && !hasShownToast.current) {
       const cameFromLogin =
         location.state?.fromLogin === true || location.pathname === "/login";
 
       if (!cameFromLogin && msg) toast.error(msg);
       hasShownToast.current = true;
     }
-  }, [shouldRedirect, msg, location, loading]);
-
-  
-  if (loading) {
-    return (
-      <div className="w-full h-screen flex justify-center items-center">
-        <LazyLoader />
-      </div>
-    );
-  }
+  }, [shouldRedirect, msg, location]);
 
   if (shouldRedirect) {
     return <Navigate to={redirectTo} replace state={{ from: location }} />;

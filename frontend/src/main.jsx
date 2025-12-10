@@ -6,16 +6,20 @@ import { createBrowserRouter } from "react-router-dom";
 import { RouterProvider } from "react-router";
 import { ThemeProvider } from "./components/theme-provider";
 import NotFound from "./pages/User/NotFound";
-// import UserLayout from "./layouts/UserLayout";
-import { AuthProvider } from "./contexts/AuthContext";
 import { Toaster } from "react-hot-toast";
-import ProtectedRoute from "./components/ProtectedRoute";
+// import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import VerifyResult from "./pages/VerifyResult";
 import VerifyStatus from "./pages/VerifyStatus";
 import AuthSuccess from "./pages/AuthSuccess";
 import AdminRoute from "./components/AdminRoute";
+import { Provider } from "react-redux";
+import store from "./redux/store";
+import { PersistGate } from "redux-persist/integration/react";
+import persistStore from "redux-persist/es/persistStore";
+import ProtectedRoute from "./components/ProtectedRoute";
+import ProductDetails from "./pages/User/ProductDetails";
 
 const UserLayout = lazy(() => import("./layouts/UserLayout"));
 const Home = lazy(() => import("./pages/User/Home"));
@@ -32,14 +36,14 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    // this should be changed to page ErrorPage
     children: [
       {
         path: "/",
         element: <UserLayout />,
         children: [
           { index: true, element: <Home /> },
-          { path: "/products", element: <Products /> },
+          { path: "/product", element: <Products /> },
+          { path: "/product/:productId", element: <ProductDetails /> },
           {
             path: "/deals",
             element: <Deals />,
@@ -68,7 +72,7 @@ const router = createBrowserRouter([
             element: (
               <ProtectedRoute
                 redirectTo="/"
-                conditionCallback={(user) => !!user}
+                conditionCallback={(user) => user}
                 msg="Already logged in"
               >
                 <Login />
@@ -109,13 +113,17 @@ const router = createBrowserRouter([
   },
 ]);
 
+let persistor = persistStore(store);
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthProvider>
-      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-        <RouterProvider router={router} />
-        <Toaster position="top-center" />
-      </ThemeProvider>
-    </AuthProvider>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <RouterProvider router={router} />
+          <Toaster position="top-center" />
+        </ThemeProvider>
+      </PersistGate>
+    </Provider>
   </StrictMode>
 );

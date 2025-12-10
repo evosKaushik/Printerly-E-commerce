@@ -424,7 +424,7 @@ const updateUser = async (req, res) => {
   try {
     const userIdToUpdate = req.params.id;
     const loggedInUser = req.user;
-    const { firstName, lastName, email } = req.body;
+    const { firstName, lastName} = req.body;
 
     if (
       loggedInUser._id.toString() !== userIdToUpdate &&
@@ -436,10 +436,9 @@ const updateUser = async (req, res) => {
       });
     }
 
-    let user = await UserModel.findById(userIdToUpdate)
-      .select(
-        "-password -__v -createdAt -updatedAt -token -isVerified -isLoggedIn"
-      )
+    let user = await UserModel.findById(userIdToUpdate).select(
+      "-password -__v -createdAt -updatedAt -token -isVerified -isLoggedIn"
+    );
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -471,16 +470,16 @@ const updateUser = async (req, res) => {
     // update Fields
     user.firstName = firstName || user.firstName;
     user.lastName = lastName || user.lastName;
-    user.email = email || user.email;
     user.avatar = avatarURL || user.avatar;
     user.avatarPublicId = avatarPublicId || user.avatarPublicId;
+
 
     const updatedUser = await user.save();
 
     return res.status(200).json({
       success: true,
       message: "Profile Updated Successfully",
-      user: updatedUser,
+      updatedUser: updatedUser,
     });
   } catch (error) {
     return res.status(500).json({

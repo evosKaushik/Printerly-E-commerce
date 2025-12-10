@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "./ui/input";
 import {
   CircleX,
@@ -17,14 +17,15 @@ import { ModeToggle } from "./ModeToggle";
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "./ui/button";
 import ProfileDropdown from "./ui/ProfileDropdown";
-import UserAPI from "@/api/Base.api";
-import { AuthContext } from "@/contexts/AuthContext";
-import toast from "react-hot-toast";
 import SidebarPortal from "./SideBarPortal";
 import SkeletonImage from "./SkeletonImage";
 import { useTheme } from "./theme-provider";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "@/redux/userSlice";
+import { logout } from "@/api/user";
+import toast from "react-hot-toast";
 
-const searchArry = [
+const searchArray = [
   "HTML",
   "CSS",
   "Javascript",
@@ -66,7 +67,7 @@ const menuItems = [
 const navLinks = [
   {
     id: 1,
-    url: "/products",
+    url: "/product",
     title: "Products",
   },
   {
@@ -95,12 +96,14 @@ const Navbar = () => {
   const [searchValue, setSearchValue] = useState("");
   const searchBoxRef = useRef();
   const { setTheme } = useTheme();
+  const dispatch = useDispatch();
 
-  const { accessToken, logout, user } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const { user } = useSelector((store) => store.user);
+
   useEffect(() => {
-    const handleClickOutside = (e) => {
+    const handleClickOutside = () => {
       if (
         searchBoxRef.current &&
         !searchBoxRef.current.contains(event.target)
@@ -108,29 +111,21 @@ const Navbar = () => {
         setSearchValue("");
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  let filteredSearch = searchArry.filter((value) =>
+  let filteredSearch = searchArray.filter((value) =>
     value.toLowerCase().includes(searchValue)
   );
 
   const handleLogoutBtn = async () => {
     try {
-      const { data } = await UserAPI.post(
-        "http://localhost:3000/api/v1/user/logout",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const data = await logout();
       if (data.success) {
         toast.success(data.message);
-        logout();
+        dispatch(setUser(null));
+        localStorage.removeItem("accessToken");
       }
     } catch (error) {
       console.log(error);
@@ -140,7 +135,7 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className="h-18 border shadow bg-(--bg-primary-clr) sticky top-0 left-0 right-0 z-50"
+        className="h-18 border backdrop-blur-3xl shadow-md  bg-(--bg-primary-clr)/20 sticky top-0 left-0 right-0 z-50"
         ref={searchBoxRef}
       >
         <div className="container mx-auto h-full flex items-center justify-between px-2">
@@ -219,12 +214,13 @@ const Navbar = () => {
                   menuItems={menuItems}
                   handleLogoutBtn={handleLogoutBtn}
                 >
-                  <div className="bg-gray-200  dark:dark:bg-gray-800 h-9 p-0.5 flex items-center justify-center w-9 rounded-md cursor-pointer">
+                  <div className="bg-gray-200  dark:dark:bg-gray-800 h-9 p-0.5 flex items-center justify-center w-9 rounded-full cursor-pointer">
                     {user.avatar ? (
                       <SkeletonImage
                         src={user?.avatar}
                         alt={user?.username}
-                        className="h-9 w-9"
+                        rounded="rounded-full"
+                        className="h-8 w-8 object-cover"
                       />
                     ) : (
                       <User2 />
@@ -250,13 +246,13 @@ const Navbar = () => {
               onClick={() => setTheme("dark")}
               className=" bg-gray-200  block dark:hidden"
             >
-              <Moon className="text-gray-800" size={30}/>
+              <Moon className="text-gray-800" size={30} />
             </Button>
             <Button
               onClick={() => setTheme("light")}
               className=" bg-gray-800 hidden dark:block"
             >
-              <Sun className="text-gray-200" size={30}/>
+              <Sun className="text-gray-200" size={30} />
             </Button>
           </div>
           <button onClick={() => setSidebarOpen(false)} className="sm:ml-auto">

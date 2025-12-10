@@ -2,13 +2,14 @@ import BaseAPI from "@/api/Base.api";
 import Form from "@/components/Form";
 import InputWithLabel from "@/components/ui/InputWithLabel";
 import PasswordInput from "@/components/ui/PasswordInput";
-import { AuthContext } from "@/contexts/AuthContext";
-import { useContext, useState } from "react";
+import { setUser } from "@/redux/userSlice";
+import { useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { setAccessToken, setUser } = useContext(AuthContext);
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     emailOrUsername: "",
     password: "",
@@ -25,12 +26,8 @@ const Login = () => {
       BaseAPI.post("/user/login", formData).then((res) => {
         const { data } = res;
         if (data.success) {
-          setAccessToken(data.accessToken);
-          setUser(data.user);
-
+          dispatch(setUser(data.user));
           localStorage.setItem("accessToken", data.accessToken);
-          localStorage.setItem("user", JSON.stringify(data.user));
-
           const target = data.message.includes("Admin") ? "/admin" : "/profile";
           setTimeout(() => {
             navigate(target, { replace: true, state: { fromLogin: true } });
@@ -63,7 +60,9 @@ const Login = () => {
         secondaryAction={{
           text: `Login with Google`,
           onClick: () =>
-            window.open("http://localhost:3000/api/v1/auth/google", "_self"),
+            window.open(
+              `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/google", "_self`
+            ),
         }}
         footerText="Don't have an account?"
         footerLink={{ text: "Create", to: "/signup" }}

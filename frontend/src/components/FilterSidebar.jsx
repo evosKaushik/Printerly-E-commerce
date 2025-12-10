@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -12,8 +11,40 @@ import { Label } from "./ui/label";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 
-const FilterSideBar = ({selectFilterItems, checkBoxItems, conditionsCheckBox }) => {
-  const [selectedCondition, setSelectedCondition] = useState("Brother");
+const selectFilterItems = [
+  "Newest Arrival",
+  "Best Selling",
+  "Highest Rated",
+  "Trending Now",
+  "Discount: High to Low",
+];
+
+const FilterSideBar = ({
+  allProducts,
+  brandFilter,
+  setBrandFilter,
+  setConditionsFilter,
+  conditionsFilter,
+}) => {
+  const category = allProducts.map((product) => product.category);
+  const categories = ["All", ...category];
+  const brand = allProducts.map((product) => product.brand);
+  const brands = ["All", ...new Set(brand)];
+  const condition = allProducts.map((product) => product.condition);
+  const conditions = ["All", ...new Set(condition)];
+
+  const handleBrandFilter = (e) => {
+    setBrandFilter(e.target.value);
+  };
+  const handleConditionsFilter = (e) => {
+    setConditionsFilter(e.target.value);
+  };
+
+  const handleReset = () =>{
+    setConditionsFilter("All")
+    setBrandFilter("All")
+  }
+
   return (
     <aside className="hidden sm:block">
       <h1 className="text-2xl font-inter font-bold">Filter</h1>
@@ -47,20 +78,25 @@ const FilterSideBar = ({selectFilterItems, checkBoxItems, conditionsCheckBox }) 
         <Card className="-space-y-3 p-4 rounded-lg shadow-sm">
           <h2 className="text-lg font-bold font-inter">Brand</h2>
           <div className="space-y-2">
-            {checkBoxItems.map((brand, index) => (
+            {brands.map((brandName, index) => (
               <div
                 className="flex items-center gap-4 font-inter"
-                key={brand + index}
+                key={brandName + index}
               >
                 <Checkbox
-                  id={brand}
+                  id={brandName}
                   className="h-5 w-5 cursor-pointer rounded-sm border-gray-900 dark:border-gray-100 dark:bg-gray-800"
+                  value={brandName}
+                  checked={
+                    brandFilter.toLowerCase() === brandName.toLowerCase()
+                  }
+                  onClick={handleBrandFilter}
                 />
                 <Label
-                  htmlFor={brand}
+                  htmlFor={brandName}
                   className="text-[16px] cursor-pointer text-gray-800 dark:text-gray-200"
                 >
-                  {brand}
+                  {brandName}
                 </Label>
               </div>
             ))}
@@ -70,16 +106,19 @@ const FilterSideBar = ({selectFilterItems, checkBoxItems, conditionsCheckBox }) 
         <Card className="-space-y-3 p-4 rounded-lg shadow-sm">
           <h2 className="text-lg font-bold font-inter">Condition</h2>
 
-          {conditionsCheckBox.map((condition) => (
+          {conditions.map((condition, index) => (
             <div key={condition} className="flex items-center space-x-2">
               <Checkbox
-                id={condition}
-                checked={selectedCondition === condition}
-                onCheckedChange={() => setSelectedCondition(condition)}
+                id={index}
+                checked={
+                  conditionsFilter.toLowerCase() === condition?.toLowerCase()
+                }
+                value={condition}
+                onClick={handleConditionsFilter}
                 className="h-5 w-5 cursor-pointer rounded-sm border-gray-900 dark:border-gray-100 dark:bg-gray-800"
               />
               <Label
-                htmlFor={condition}
+                htmlFor={index}
                 className="font-inter text-[16px] font-semibold cursor-pointer text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
               >
                 {condition}
@@ -88,14 +127,12 @@ const FilterSideBar = ({selectFilterItems, checkBoxItems, conditionsCheckBox }) 
           ))}
         </Card>
         {/* Apply Filter */}
-        <div className="flex w-full px-2 gap-4">
+        <div className="flex w-10/12 mx-auto px-2 gap-4">
           <Button
             variant="primary"
             className="font-bold dark:text-zinc-900 grow cursor-pointer"
+            onClick={handleReset}
           >
-            Apply Filter
-          </Button>
-          <Button className="bg-gray-200  font-bold text-primary hover:bg-gray-300 dark:bg-gray-800 grow cursor-pointer">
             Reset
           </Button>
         </div>

@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
-  const { accessToken } = useContext(AuthContext);
+  const accessToken = localStorage.getItem("accessToken");
   const navigate = useNavigate();
   useEffect(() => {
     const getAllUsers = async () => {
@@ -26,7 +26,7 @@ const AdminDashboard = () => {
       }
     };
     getAllUsers();
-  }, []);
+  }, [accessToken]);
   return <div>Admin Dashboard</div>;
 };
 

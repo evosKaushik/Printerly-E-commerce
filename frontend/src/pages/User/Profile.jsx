@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import BaseAPI from "@/api/Base.api";
 import { Button } from "@/components/ui/button";
-import { AuthContext } from "@/contexts/AuthContext";
 import {
   CreditCard,
   LayoutDashboard,
@@ -18,19 +17,22 @@ import {
 import MobileNav from "@/section/Profile/MobileNav";
 import SideBar from "@/components/SideBar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { logout } from "@/api/user";
+import { setUser } from "@/redux/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Profile = () => {
-  const [profileData, setProfileData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [file, setFile] = useState(null);
+  const { user } = useSelector((store) => store.user);
   const [updatedProfileData, setUpdatedProfileData] = useState({
-    firstName: profileData.firstName,
-    lastName: profileData.lastName,
-    avatar: profileData.avatar,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    avatar: user.avatar,
   });
+  const dispatch = useDispatch();
 
-  const { accessToken, logout, setUser, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const profileListItem = [
@@ -42,23 +44,6 @@ const Profile = () => {
   ];
 
   // Fetch Profile Data
-  useEffect(() => {
-    const getUserProfile = async () => {
-      try {
-        const { data } = await BaseAPI.get("/user/profile", {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        if (data.success) {
-          setProfileData(data.data);
-          setUpdatedProfileData(data.data);
-          setLoading(false);
-        }
-      } catch (error) {
-        toast.error(error.response?.data?.message || "Failed to fetch profile");
-      }
-    };
-    getUserProfile();
-  }, [accessToken]);
 
   // Handle File Change
   const handleFileChange = (e) => {
@@ -79,13 +64,14 @@ const Profile = () => {
     }));
   };
 
+  const accessToken = localStorage.getItem("accessToken");
   // Handle Edit / Save
   const handleEditToggle = async () => {
     // If not editing, enable edit mode
     if (!isEditing) return setIsEditing(true);
 
     // Prevent API call if nothing changed
-    if (updatedProfileData === profileData) {
+    if (updatedProfileData === user) {
       setIsEditing(false);
       return;
     }
@@ -97,9 +83,8 @@ const Profile = () => {
       fd.append("email", updatedProfileData.email);
       if (file) fd.append("file", file);
 
-
       await toast.promise(
-        BaseAPI.put(`/user/update-profile/${profileData._id}`, fd, {
+        BaseAPI.put(`/user/update-profile/${user._id}`, fd, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "multipart/form-data",
@@ -111,9 +96,9 @@ const Profile = () => {
           success: (res) => {
             const data = res.data;
             if (data.success) {
-              setProfileData(data.updatedUser || updatedProfileData);
+              dispatch(setUser(data.updatedUser || updatedProfileData));
+              console.log({ ...user, ...data.updatedUser });
               setIsEditing(false);
-              console.log(data.updatedUser)
             }
             return data.message || "Profile updated successfully!";
           },
@@ -133,38 +118,32 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      const { data } = await BaseAPI.post(
-        "user/logout",
-        {},
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
+      const data = await logout();
       if (data.success) {
         toast.success(data.message);
         navigate("/");
-        setTimeout(() => logout(), 1000);
+        dispatch(setUser(null));
+        localStorage.removeItem("accessToken");
       }
     } catch (error) {
       console.error(error);
     }
   };
-
-
-
   return (
     <main className="screenBgColor min-h-[calc(100vh-72px)] font-inter">
       <div className="grid sm:grid-cols-[auto_1fr] relative">
         {/* Sidebar */}
         <SideBar
           navListItems={profileListItem}
-          userDetails={profileData}
+          userDetails={user}
           onClickHandleLogout={handleLogout}
         />
 
         {/* Main Section */}
-        <section className="pt-8 sm:px-4 md:px-8 xl:px-12">
+        <section className="py-8 sm:px-4 md:px-8 xl:px-12">
           <div className="flex justify-between flex-wrap items-center mb-8">
             <h1 className="text-3xl sm:text-4xl font-bold">My Profile</h1>
-            {profileData?.role === "admin" && (
+            {user?.role === "admin" && (
               <Link
                 to="/admin"
                 className="flex items-center gap-1 text-blue-600 dark:text-blue-300"
@@ -219,35 +198,29 @@ const Profile = () => {
                   />
                 </div>
 
-                <div className="grid sm:grid-cols-2 gap-4 grow">
+                <div className="grid sm:grid-cols-2 gap-4 grow w-full">
                   {/* First Name */}
-                  <div className="border-b border-gray-400 dark:border-gray-600">
+                  <div className="border-b border-gray-400 dark:border-gray-600 w-full">
                     <label className="text-sm text-gray-500">First Name</label>
 
-                    {loading ? (
-                      <Skeleton className="w-full h-6 mt-3 mb-2" />
-                    ) : (
-                      <input
-                        name="firstName"
-                        type="text"
-                        value={updatedProfileData?.firstName || <Skeleton />}
-                        onChange={handleChange}
-                        disabled={!isEditing}
-                        className={`w-full text-base mt-1 p-2 border-b outline-none transition-all duration-200 ${
-                          isEditing
-                            ? "border-blue-500"
-                            : "border-transparent bg-transparent cursor-default"
-                        }`}
-                      />
-                    )}
+                    <input
+                      name="firstName"
+                      type="text"
+                      value={updatedProfileData?.firstName || ""}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                      className={`w-full text-base mt-1 p-2 border-b outline-none transition-all duration-200 ${
+                        isEditing
+                          ? "border-blue-500"
+                          : "border-transparent bg-transparent cursor-default"
+                      }`}
+                    />
                   </div>
 
                   {/* Last Name */}
-                  <div className="border-b border-gray-400 dark:border-gray-600">
+                  <div className="border-b border-gray-400 dark:border-gray-600 w-full">
                     <label className="text-sm text-gray-500">Last Name</label>
-                    {loading ? (
-                      <Skeleton className="w-full h-6 mt-3 mb-2" />
-                    ) : (
+                    <div className="overflow-x-hidden">
                       <input
                         name="lastName"
                         type="text"
@@ -260,7 +233,7 @@ const Profile = () => {
                             : "border-transparent bg-transparent cursor-default"
                         }`}
                       />
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -269,18 +242,15 @@ const Profile = () => {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="border-b border-gray-400 dark:border-gray-600">
                   <label className="text-sm text-gray-500">Email</label>
-
-                  {loading ? (
-                    <Skeleton className="w-full h-6 mt-3 mb-2" />
-                  ) : (
+                  <div className="overflow-x-hidden">
                     <input
                       name="email"
                       type="email"
                       readOnly
-                      value={profileData?.email || ""}
+                      value={user?.email || ""}
                       className={`w-full text-base mt-1 p-2  outline-none transition-all duration-200`}
                     />
-                  )}
+                  </div>
                 </div>
 
                 {/* Phone */}

@@ -23,7 +23,7 @@ const SkeletonImage = ({
         alt={alt}
         onLoad={() => setLoaded(true)}
         loading="lazy"
-        className={`${className} ${rounded} transition-opacity duration-500 ${
+        className={`${className} ${rounded}  transition-opacity duration-500 ${
           loaded ? "opacity-100" : "opacity-0"
         }`}
       />

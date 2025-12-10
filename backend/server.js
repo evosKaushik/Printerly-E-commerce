@@ -3,6 +3,7 @@ import express from "express";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
 import adminDashboardRoutes from "./routes/admin.route.js";
+import ProductRoute from "./routes/product.route.js";
 import connectDB from "./config/db.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -21,7 +22,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.CLIENT_URL,
     credentials: true,
   })
 );
@@ -31,6 +32,7 @@ app.use(
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/admin-dashboard", adminDashboardRoutes);
+app.use("/api/v1/product", ProductRoute);
 
 //Connect to DB
 

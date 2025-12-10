@@ -5,7 +5,7 @@ const MobileNav = ({navListsItems}) => {
   return (
     <nav
       className="fixed bottom-0 left-0 w-full bg-background border-t border-gray-300 dark:border-gray-700
-        flex items-center gap-3 py-2 px-2 justify-center  sm:hidden shadow-lg overflow-x-auto scrollbar-thin"
+        flex items-center gap-3 py-2 px-4  justify-center  sm:hidden shadow-lg overflow-x-auto scrollbar-thin"
     >
       {navListsItems.map(({ id, title, icon }) => (
         <button
